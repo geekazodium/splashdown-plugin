@@ -15,6 +15,7 @@ public class SplashDown extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         setInstance(this);
+        CollisionBox.debugRenderEnabled = true;
         playerHandlerInstantiator = new PlayerHandlerInstantiator();
         Bukkit.getPluginManager().registerEvents(playerHandlerInstantiator,this);
     }

@@ -6,6 +6,8 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -20,6 +22,7 @@ import static com.geekazodium.splashdown.CollisionUtil.getRotationMatrix;
 import static java.lang.Math.toRadians;
 
 public class CollisionBox {
+    public static boolean debugRenderEnabled = false;
     public Quaterniond finalRotation;
     public Vector pos = new Vector(0, 0, 0);
     public Vector offset;
@@ -29,16 +32,13 @@ public class CollisionBox {
     private byte copyRotationType = 3;
     private final CollisionUtil.OBB collider;
     private Vector effectiveOffset;
+    private Color debugColor;
 
     public CollisionBox(Vector offset,
                         Vector center,
                         Vector size,
                         Quaterniond rotation) {
-        this.offset = offset;
-        this.center = center;
-        this.size = size;
-        this.rotation = rotation;
-        collider = new CollisionUtil.OBB(this, rotation);
+        this(offset,center,size,rotation,(byte) 3);
     }
 
     public CollisionBox(Vector offset,
@@ -46,16 +46,31 @@ public class CollisionBox {
                         Vector size,
                         Quaterniond rotation,
                         byte copyRotationType) {
-        this(offset, center, size, rotation);
+        this(offset, center, size, rotation, Color.RED, copyRotationType);
+    }
+
+    public CollisionBox(Vector offset,
+                        Vector center,
+                        Vector size,
+                        Quaterniond rotation,
+                        Color debugColor,
+                        byte copyRotationType) {
+        this.offset = offset;
+        this.center = center;
+        this.size = size;
+        this.rotation = rotation;
+        this.debugColor = debugColor;
+        this.collider = new CollisionUtil.OBB(this, rotation);
         this.copyRotationType = copyRotationType;
     }
 
     public static CollisionBox fromBoundingBox(BoundingBox boundingBox) {
         return new CollisionBox(
                 new Vector(0,0,0),
-                new Vector(0.5,0.5,0.5),
+                new Vector(0.5,1,0.5),
                 new Vector(boundingBox.getWidthX(),boundingBox.getHeight(), boundingBox.getWidthZ()),
-            quaternionIdentity(),
+                quaternionIdentity(),
+                Color.GREEN,
                 (byte)0
         );
     }
@@ -63,6 +78,26 @@ public class CollisionBox {
     public boolean isColliding(CollisionBox otherHitbox) {
         return CollisionUtil.getCollision(collider, otherHitbox.getCollider());
     }
+
+    public boolean isColliding(Entity entity){
+        BoundingBox entityBoundingBox = entity.getBoundingBox();
+        CollisionBox entityHurtBox = CollisionBox.fromBoundingBox(entityBoundingBox);
+        entityHurtBox.updateCollider(entity.getLocation());
+        if(debugRenderEnabled == true)entityHurtBox.renderOutline(entity.getWorld());
+        return CollisionUtil.getCollision(collider,entityHurtBox.getCollider());
+    }
+
+    public boolean isCollidingSkull(Entity entity){
+        BoundingBox entityBoundingBox = entity.getBoundingBox();
+        double eyeHeight = ((LivingEntity) entity).getEyeHeight();
+        BoundingBox entityHeadBox = entityBoundingBox.clone().expand(-0.1,(entityBoundingBox.getHeight()-eyeHeight*2)/2,-0.1);
+        CollisionBox entityHurtBox = CollisionBox.fromBoundingBox(entityHeadBox);
+        entityHurtBox.debugColor = Color.YELLOW;
+        entityHurtBox.updateCollider(entity.getLocation().add(0, eyeHeight*2-entityBoundingBox.getHeight(),0));
+        if(debugRenderEnabled == true)entityHurtBox.renderOutline(entity.getWorld());
+        return CollisionUtil.getCollision(collider,entityHurtBox.getCollider());
+    }
+
     public CollisionUtil.OBB getCollider() {
         return this.collider;
     }
@@ -164,15 +199,16 @@ public class CollisionBox {
     }
 
     public void renderOutline(World world){
+        if(debugRenderEnabled == false)return;
         for (Pair<Vector, Vector> pair: this.getOutline()) {
             Vector p1 = pair.left();
             Vector p2 = pair.right();
             for (Player player:world.getPlayers()) {
                 ParticleUtil.line(
                         player,
-                        Particle.REDSTONE,
+                        Particle.DUST_COLOR_TRANSITION,
                         1,
-                        new Particle.DustOptions(Color.RED,1),
+                        new Particle.DustTransition(debugColor,debugColor,0.6f),
                         getLocationForVec(world, p1),
                         getLocationForVec(world, p2),
                         (int)Math.max(2,p1.distance(p2)*5),
