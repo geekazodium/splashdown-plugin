@@ -92,7 +92,7 @@ public class CollisionBox {
     public boolean isCollidingSkull(Entity entity){
         BoundingBox entityBoundingBox = entity.getBoundingBox();
         double eyeHeight = ((LivingEntity) entity).getEyeHeight();
-        BoundingBox entityHeadBox = entityBoundingBox.clone().expand(-0.1,(entityBoundingBox.getHeight()-eyeHeight*2)/2,-0.1);
+        BoundingBox entityHeadBox = entityBoundingBox.clone().expand(0,(entityBoundingBox.getHeight()-eyeHeight*2)/2,0);
         CollisionBox entityHurtBox = CollisionBox.fromBoundingBox(entityHeadBox);
         entityHurtBox.debugColor = Color.YELLOW;
         entityHurtBox.updateCollider(entity.getLocation().add(0, eyeHeight*2-entityBoundingBox.getHeight(),0));
@@ -129,7 +129,7 @@ public class CollisionBox {
                 pos,
                 quaternionIdentity().rotationYXZ(
                         ((this.copyRotationType & COPY_YAW) != 0) ? (float) toRadians(-yaw) : 0,
-                        ((this.copyRotationType & COPY_PITCH) != 0) ?(float) toRadians(pitch):0,
+                        ((this.copyRotationType & COPY_PITCH) != 0) ?(float) toRadians(pitch) : 0,
                         0
                 )
         );
