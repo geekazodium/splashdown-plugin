@@ -6,7 +6,7 @@ plugins {
 
 group = "com.geekazodium"
 version = "1.0.0-SNAPSHOT"
-description = "Remake of the game Paint 'em on server mcdiamondfire.com"
+description = "Shooter game thing idfk"
 
 java {
   // Configure the java toolchain. This allows gradle to auto-provision JDK 17 on systems that only have JDK 8 installed for example.

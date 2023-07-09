@@ -22,6 +22,8 @@ import static com.geekazodium.splashdown.CollisionUtil.getRotationMatrix;
 import static java.lang.Math.toRadians;
 
 public class CollisionBox {
+    public static final byte COPY_YAW = 1;
+    public static final byte COPY_PITCH = 1 << 1;
     public static boolean debugRenderEnabled = false;
     public Quaterniond finalRotation;
     public Vector pos = new Vector(0, 0, 0);
@@ -29,7 +31,7 @@ public class CollisionBox {
     public Vector center;
     public Vector size;
     public Quaterniond rotation;
-    private byte copyRotationType = 3;
+    private final byte copyRotationType;
     private final CollisionUtil.OBB collider;
     private Vector effectiveOffset;
     private Color debugColor;
@@ -38,7 +40,7 @@ public class CollisionBox {
                         Vector center,
                         Vector size,
                         Quaterniond rotation) {
-        this(offset,center,size,rotation,(byte) 3);
+        this(offset,center,size,rotation, (byte) (COPY_YAW|COPY_PITCH));
     }
 
     public CollisionBox(Vector offset,
@@ -126,8 +128,8 @@ public class CollisionBox {
         this.updateCollider(
                 pos,
                 quaternionIdentity().rotationYXZ(
-                        this.copyRotationType==1||this.copyRotationType==3?(float) toRadians(-yaw):0,
-                        this.copyRotationType==2||this.copyRotationType==3?(float) toRadians(pitch):0,
+                        ((this.copyRotationType & COPY_YAW) != 0) ? (float) toRadians(-yaw) : 0,
+                        ((this.copyRotationType & COPY_PITCH) != 0) ?(float) toRadians(pitch):0,
                         0
                 )
         );
