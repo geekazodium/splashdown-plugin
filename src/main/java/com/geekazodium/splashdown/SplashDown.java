@@ -18,6 +18,8 @@ public class SplashDown extends JavaPlugin implements Listener {
         CollisionBox.debugRenderEnabled = true;
         playerHandlerInstantiator = new PlayerHandlerInstantiator();
         Bukkit.getPluginManager().registerEvents(playerHandlerInstantiator,this);
+
+        getServer().getPluginCommand("item").setExecutor(new ItemCommandExecutor());
     }
 
     private static void setInstance(SplashDown instance) {

@@ -6,3 +6,8 @@ load: STARTUP
 authors:
   - Author
 api-version: "$apiVersion"
+commands:
+    item:
+        description: gets custom item
+        permission: operator
+        usage: /item <id/name>
