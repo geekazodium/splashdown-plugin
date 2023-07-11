@@ -2,17 +2,17 @@ package com.geekazodium.splashdown;
 
 import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import com.destroystokyo.paper.event.server.ServerTickStartEvent;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -27,12 +27,11 @@ import java.util.function.Predicate;
 public class PlayerHandler implements Listener {
 
     public static final NamespacedKey ITEM_ID_KEY = new NamespacedKey(SplashDown.getInstance(), "item_id");
+    public static final int MAX_FOOD_LEVEL = 40;
     private final Player player;
-    private final CollisionBox hurtbox;
 
     public PlayerHandler(Player player){
         this.player = player;
-        this.hurtbox = CollisionBox.fromBoundingBox(this.player.getBoundingBox());
         Bukkit.getServer().getPluginManager().registerEvents(this,SplashDown.getInstance());
     }
 
@@ -46,21 +45,24 @@ public class PlayerHandler implements Listener {
     }
 
     public void onRightClick(PlayerInteractEvent event){
-        Location eyeLocation = player.getEyeLocation();
-        CollisionBox collisionBox = new CollisionBox(
-            new Vector(0,0,0),
-            new Vector(0.5,0.5,1),
-            new Vector(0.2,0.2,20),
-            new Quaterniond(1,0,0,0)
-        );
-        Collection<Entity> nearbyEntities = getNearbyDamageableEntities(eyeLocation, collisionBox, 64);
-        collisionBox.updateCollider(eyeLocation);
-        Entity entityHit = getNearestCollidingEntity(eyeLocation, collisionBox, nearbyEntities);
-        if(entityHit!=null){
-            if(collisionBox.isCollidingSkull(entityHit)){
-                ((LivingEntity) entityHit).damage(100);
-            }else {
-
+        int itemId = getItemId(event.getItem());
+        if(itemId != -1){
+            Location eyeLocation = player.getEyeLocation();
+            CollisionBox collisionBox = new CollisionBox(
+                new Vector(0,0,0),
+                new Vector(0.5,0.5,1),
+                new Vector(0.2,0.2,64-1),
+                new Quaterniond(1,0,0,0)
+            );
+            Collection<Entity> nearbyEntities = getNearbyDamageableEntities(eyeLocation, collisionBox, 64);
+            collisionBox.updateCollider(eyeLocation);
+            Entity entityHit = getNearestCollidingEntity(eyeLocation, collisionBox, nearbyEntities);
+            if(entityHit!=null){
+                if(collisionBox.isCollidingSkull(entityHit)){
+                    ((LivingEntity) entityHit).damage(100);
+                }else {
+                    ((LivingEntity) entityHit).damage(5);
+                }
             }
         }
     }
@@ -98,11 +100,21 @@ public class PlayerHandler implements Listener {
     }
 
     @EventHandler
-    public void onServerTick(ServerTickEndEvent event){
-        hurtbox.updateCollider(player.getLocation());
+    public void onTickStart(ServerTickStartEvent event){
+
+    }
+
+    @EventHandler
+    public void onTickEnd(ServerTickEndEvent event){
+
     }
 
     public void onDisconnect(PlayerConnectionCloseEvent event){
         HandlerList.unregisterAll(this);
+    }
+
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        player.teleportAsync(player.getWorld().getSpawnLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
+        player.setFoodLevel(MAX_FOOD_LEVEL);
     }
 }

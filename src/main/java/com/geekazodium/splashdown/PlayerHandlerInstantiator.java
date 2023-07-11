@@ -1,10 +1,14 @@
 package com.geekazodium.splashdown;
 
 import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
@@ -47,5 +51,24 @@ public class PlayerHandlerInstantiator implements Listener {
         if(event.getAction().isLeftClick()){
             playerHandler.onLeftClick(event);
         }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event){
+        Bukkit.getServer().sendMessage(nonNullDeathMessage(event));
+        Player player = event.getPlayer();
+        PlayerHandler playerHandler = playerHandlers.get(player.getUniqueId());
+        playerHandler.onPlayerDeath(event);
+        event.setCancelled(true);
+    }
+
+    @NotNull
+    private Component nonNullDeathMessage(PlayerDeathEvent event) {
+        Component component = event.deathMessage();
+        if(component == null){
+            LOGGER.warning("Death message is null for death event of player: "+event.getPlayer().getName());
+            return Component.text("");
+        }
+        return component;
     }
 }
