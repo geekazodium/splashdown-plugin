@@ -3,13 +3,18 @@ package com.geekazodium.splashdown;
 import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.destroystokyo.paper.event.server.ServerTickStartEvent;
+import com.geekazodium.splashdown.entities.BubbleEntity;
+import net.minecraft.world.level.Level;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -46,6 +51,10 @@ public class PlayerHandler implements Listener {
 
     public void onRightClick(PlayerInteractEvent event){
         int itemId = getItemId(event.getItem());
+        ((CraftWorld) player.getWorld()).addEntityToWorld(
+            new BubbleEntity(player.getEyeLocation(),player,1.5),
+            CreatureSpawnEvent.SpawnReason.EGG
+        );
         if(itemId != -1){
             Location eyeLocation = player.getEyeLocation();
             CollisionBox collisionBox = new CollisionBox(

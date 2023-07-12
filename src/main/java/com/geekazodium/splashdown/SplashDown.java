@@ -22,7 +22,7 @@ public class SplashDown extends JavaPlugin implements Listener {
         getServer().getPluginCommand("item").setExecutor(new ItemCommandExecutor());
     }
 
-    private static void setInstance(SplashDown instance) {
+    private void setInstance(SplashDown instance) {
         SplashDown.instance = instance;
     }
 
