@@ -3,18 +3,15 @@ package com.geekazodium.splashdown;
 import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.destroystokyo.paper.event.server.ServerTickStartEvent;
-import com.geekazodium.splashdown.entities.BubbleEntity;
-import net.minecraft.world.level.Level;
-import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -24,14 +21,13 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Quaterniond;
 
 import java.util.Collection;
 import java.util.function.Predicate;
 
-public class PlayerHandler implements Listener {
+import static com.geekazodium.splashdown.WeaponItemHandlerRegistry.ITEM_ID_KEY;
 
-    public static final NamespacedKey ITEM_ID_KEY = new NamespacedKey(SplashDown.getInstance(), "item_id");
+public class PlayerHandler implements Listener {
     public static final int MAX_FOOD_LEVEL = 40;
     private final Player player;
 
@@ -43,6 +39,7 @@ public class PlayerHandler implements Listener {
     private int getItemId(ItemStack item) {
         if(item == null) return -1;
         ItemMeta itemMeta = item.getItemMeta();
+        if(itemMeta == null) return -1;
         PersistentDataContainer itemDataContainer = itemMeta.getPersistentDataContainer();
         Integer integer = itemDataContainer.get(ITEM_ID_KEY, PersistentDataType.INTEGER);
         if(integer == null) return -1;
@@ -50,29 +47,28 @@ public class PlayerHandler implements Listener {
     }
 
     public void onRightClick(PlayerInteractEvent event){
-        int itemId = getItemId(event.getItem());
-        ((CraftWorld) player.getWorld()).addEntityToWorld(
-            new BubbleEntity(player.getEyeLocation(),player,1.5),
-            CreatureSpawnEvent.SpawnReason.EGG
-        );
+        int itemId = getItemId(player.getInventory().getItemInMainHand());
         if(itemId != -1){
-            Location eyeLocation = player.getEyeLocation();
-            CollisionBox collisionBox = new CollisionBox(
-                new Vector(0,0,0),
-                new Vector(0.5,0.5,1),
-                new Vector(0.2,0.2,64-1),
-                new Quaterniond(1,0,0,0)
-            );
-            Collection<Entity> nearbyEntities = getNearbyDamageableEntities(eyeLocation, collisionBox, 64);
-            collisionBox.updateCollider(eyeLocation);
-            Entity entityHit = getNearestCollidingEntity(eyeLocation, collisionBox, nearbyEntities);
-            if(entityHit!=null){
-                if(collisionBox.isCollidingSkull(entityHit)){
-                    ((LivingEntity) entityHit).damage(100);
-                }else {
-                    ((LivingEntity) entityHit).damage(5);
-                }
-            }
+            WeaponItemHandler weaponHandler = SplashDown.getInstance().weaponItemHandlerRegistry.getWeaponHandler(itemId);
+            weaponHandler.onRightClick(this,event);
+
+//            Location eyeLocation = player.getEyeLocation();
+//            CollisionBox collisionBox = new CollisionBox(
+//                new Vector(0,0,0),
+//                new Vector(0.5,0.5,1),
+//                new Vector(0.2,0.2,64-1),
+//                new Quaterniond(1,0,0,0)
+//            );
+//            Collection<Entity> nearbyEntities = getNearbyDamageableEntities(eyeLocation, collisionBox, 64);
+//            collisionBox.updateCollider(eyeLocation);
+//            Entity entityHit = getNearestCollidingEntity(eyeLocation, collisionBox, nearbyEntities);
+//            if(entityHit!=null){
+//                if(collisionBox.isCollidingSkull(entityHit)){
+//                    ((LivingEntity) entityHit).damage(100);
+//                }else {
+//                    ((LivingEntity) entityHit).damage(5);
+//                }
+//            }
         }
     }
 
@@ -125,5 +121,9 @@ public class PlayerHandler implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         player.teleportAsync(player.getWorld().getSpawnLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
         player.setFoodLevel(MAX_FOOD_LEVEL);
+    }
+
+    public Player getPlayer() {
+        return this.player;
     }
 }

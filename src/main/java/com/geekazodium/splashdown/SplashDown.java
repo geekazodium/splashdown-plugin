@@ -9,8 +9,10 @@ import java.util.logging.Logger;
 
 public class SplashDown extends JavaPlugin implements Listener {
     private static SplashDown instance;
-    private PlayerHandlerInstantiator playerHandlerInstantiator;
     public static final Logger LOGGER = Bukkit.getServer().getLogger();
+    private PlayerHandlerInstantiator playerHandlerInstantiator;
+
+    public WeaponItemHandlerRegistry weaponItemHandlerRegistry;
 
     @Override
     public void onEnable() {
@@ -18,8 +20,15 @@ public class SplashDown extends JavaPlugin implements Listener {
         CollisionBox.debugRenderEnabled = true;
         playerHandlerInstantiator = new PlayerHandlerInstantiator();
         Bukkit.getPluginManager().registerEvents(playerHandlerInstantiator,this);
+        initWeaponItemHandlerRegistry();
 
         getServer().getPluginCommand("item").setExecutor(new ItemCommandExecutor());
+    }
+
+    private void initWeaponItemHandlerRegistry() {
+        weaponItemHandlerRegistry = new WeaponItemHandlerRegistry();
+        weaponItemHandlerRegistry.registerItem(new BubbleGunHandler());
+        weaponItemHandlerRegistry.initIdStrings();
     }
 
     private void setInstance(SplashDown instance) {
