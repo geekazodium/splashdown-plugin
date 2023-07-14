@@ -8,13 +8,21 @@ group = "com.geekazodium"
 version = "1.0.0-SNAPSHOT"
 description = "Shooter game thing idfk"
 
+repositories{
+    flatDir{
+        dir("LocalLibs")
+    }
+}
+
 java {
   // Configure the java toolchain. This allows gradle to auto-provision JDK 17 on systems that only have JDK 8 installed for example.
   toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 dependencies {
-  paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
+    implementation("me.libraryaddict.libsdisguises:LibsDisguises-10.0.37-Github")
+    compileOnly("com.comphenix.protocollib:ProtocolLib")
   // paperweight.foliaDevBundle("1.20.1-R0.1-SNAPSHOT")
   // paperweight.devBundle("com.example.paperfork", "1.20.1-R0.1-SNAPSHOT")
 }
@@ -57,3 +65,4 @@ tasks {
   }
    */
 }
+
