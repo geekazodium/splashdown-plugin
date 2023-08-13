@@ -1,7 +1,9 @@
 plugins {
-  `java-library`
-  id("io.papermc.paperweight.userdev") version "1.5.5"
-  id("xyz.jpenilla.run-paper") version "2.1.0" // Adds runServer and runMojangMappedServer tasks for testing
+    `java-library`
+    id("io.papermc.paperweight.userdev") version "1.5.5"
+    id("xyz.jpenilla.run-paper") version "2.1.0" // Adds runServer and runMojangMappedServer tasks for testing
+
+    id ("com.diffplug.spotless") version "6.19.0"
 }
 
 group = "com.geekazodium"
@@ -64,5 +66,16 @@ tasks {
     outputJar.set(layout.buildDirectory.file("libs/PaperweightTestPlugin-${project.version}.jar"))
   }
    */
+
+    spotless {
+        java {
+            // define the steps to apply to Java source code
+            importOrder()
+            removeUnusedImports()
+            palantirJavaFormat("2.33.0")
+            trimTrailingWhitespace()
+            endWithNewline()
+        
+    }
 }
 
