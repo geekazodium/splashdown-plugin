@@ -4,8 +4,6 @@
  */
 package com.geekazodium.splashdown;
 
-import static com.geekazodium.splashdown.WeaponItemHandlerRegistry.ITEM_ID_KEY;
-
 import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.destroystokyo.paper.event.server.ServerTickStartEvent;
@@ -44,7 +42,7 @@ public class PlayerHandler implements Listener {
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta == null) return -1;
         PersistentDataContainer itemDataContainer = itemMeta.getPersistentDataContainer();
-        Integer integer = itemDataContainer.get(ITEM_ID_KEY, PersistentDataType.INTEGER);
+        Integer integer = itemDataContainer.get(WeaponItemHandlerRegistry.ITEM_ID_KEY, PersistentDataType.INTEGER);
         if (integer == null) return -1;
         return integer;
     }

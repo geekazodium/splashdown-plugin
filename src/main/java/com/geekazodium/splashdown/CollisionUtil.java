@@ -4,8 +4,6 @@
  */
 package com.geekazodium.splashdown;
 
-import static java.lang.Math.abs;
-
 import org.bukkit.util.Vector;
 import org.joml.Quaterniond;
 
@@ -32,13 +30,13 @@ public class CollisionUtil {
     }
 
     public static boolean getSeparatingPlane(Vector RPos, Vector Plane, OBB box1, OBB box2) {
-        return (abs(RPos.clone().dot(Plane))
-                > (abs((box1.AxisX.clone().multiply(box1.Half_size.getX())).dot(Plane))
-                        + abs((box1.AxisY.clone().multiply(box1.Half_size.getY())).dot(Plane))
-                        + abs((box1.AxisZ.clone().multiply(box1.Half_size.getZ())).dot(Plane))
-                        + abs((box2.AxisX.clone().multiply(box2.Half_size.getX())).dot(Plane))
-                        + abs((box2.AxisY.clone().multiply(box2.Half_size.getY())).dot(Plane))
-                        + abs((box2.AxisZ.clone().multiply(box2.Half_size.getZ())).dot(Plane))));
+        return (Math.abs(RPos.clone().dot(Plane))
+                > (Math.abs((box1.AxisX.clone().multiply(box1.Half_size.getX())).dot(Plane))
+                        + Math.abs((box1.AxisY.clone().multiply(box1.Half_size.getY())).dot(Plane))
+                        + Math.abs((box1.AxisZ.clone().multiply(box1.Half_size.getZ())).dot(Plane))
+                        + Math.abs((box2.AxisX.clone().multiply(box2.Half_size.getX())).dot(Plane))
+                        + Math.abs((box2.AxisY.clone().multiply(box2.Half_size.getY())).dot(Plane))
+                        + Math.abs((box2.AxisZ.clone().multiply(box2.Half_size.getZ())).dot(Plane))));
     }
 
     public static boolean getCollision(OBB box1, OBB box2) {

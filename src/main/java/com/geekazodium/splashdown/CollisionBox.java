@@ -4,10 +4,6 @@
  */
 package com.geekazodium.splashdown;
 
-import static com.geekazodium.splashdown.CollisionUtil.applyRotationMatrix;
-import static com.geekazodium.splashdown.CollisionUtil.getRotationMatrix;
-import static java.lang.Math.toRadians;
-
 import com.geekazodium.splashdown.util.ParticleUtil;
 import it.unimi.dsi.fastutil.Pair;
 import java.util.ArrayList;
@@ -108,12 +104,12 @@ public class CollisionBox {
     }
 
     public void updateEffectiveOffset(Quaterniond rotation) {
-        Vector[] m = getRotationMatrix(this.rotation);
+        Vector[] m = CollisionUtil.getRotationMatrix(this.rotation);
         Vector o = offset.clone()
-                .add(applyRotationMatrix(
+                .add(CollisionUtil.applyRotationMatrix(
                         new Vector(0.5, 0.5, 0.5).subtract(center).multiply(size), m));
-        m = getRotationMatrix(rotation);
-        this.effectiveOffset = applyRotationMatrix(o, m);
+        m = CollisionUtil.getRotationMatrix(rotation);
+        this.effectiveOffset = CollisionUtil.applyRotationMatrix(o, m);
     }
 
     public void updateCollider(Vector pos, float pitch, float yaw) {
@@ -121,8 +117,8 @@ public class CollisionBox {
                 pos,
                 quaternionIdentity()
                         .rotationYXZ(
-                                ((this.copyRotationType & COPY_YAW) != 0) ? (float) toRadians(-yaw) : 0,
-                                ((this.copyRotationType & COPY_PITCH) != 0) ? (float) toRadians(pitch) : 0,
+                                ((this.copyRotationType & COPY_YAW) != 0) ? (float) Math.toRadians(-yaw) : 0,
+                                ((this.copyRotationType & COPY_PITCH) != 0) ? (float) Math.toRadians(pitch) : 0,
                                 0));
     }
 
@@ -134,7 +130,7 @@ public class CollisionBox {
     public void updateRotation(Quaterniond rotation) {
         this.finalRotation = new Quaterniond(rotation);
         this.finalRotation.mul(this.rotation);
-        this.collider.setRotationAxis(getRotationMatrix(finalRotation));
+        this.collider.setRotationAxis(CollisionUtil.getRotationMatrix(finalRotation));
     }
 
     public Vector centerPoint() {
@@ -176,21 +172,21 @@ public class CollisionBox {
         }
         for (Pair<Vector, Vector> line : lines) {
             Vector point = line.left();
-            Vector vec = applyRotationMatrix(
+            Vector vec = CollisionUtil.applyRotationMatrix(
                             new Vector(
                                     (point.getX() - 0.5d) * size.getX(),
                                     (point.getY() - 0.5d) * size.getY(),
                                     (point.getZ() - 0.5d) * size.getZ()),
-                            getRotationMatrix(this.finalRotation))
+                            CollisionUtil.getRotationMatrix(this.finalRotation))
                     .clone()
                     .add(pos);
             Vector point2 = line.right();
-            Vector vec2 = applyRotationMatrix(
+            Vector vec2 = CollisionUtil.applyRotationMatrix(
                             new Vector(
                                     (point2.getX() - 0.5d) * size.getX(),
                                     (point2.getY() - 0.5d) * size.getY(),
                                     (point2.getZ() - 0.5d) * size.getZ()),
-                            getRotationMatrix(this.finalRotation))
+                            CollisionUtil.getRotationMatrix(this.finalRotation))
                     .clone()
                     .add(pos);
             r.add(Pair.of(vec, vec2));
