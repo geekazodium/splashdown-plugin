@@ -1,3 +1,7 @@
+/*
+ * Copyright © Geekazodium 2023.
+ * This file is released under GPLv3. See LICENSE for full license details.
+ */
 package com.geekazodium.splashdown.entities;
 
 import java.lang.reflect.Field;
@@ -24,7 +28,6 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public class BubbleEntity extends Snowball {
-
     private static Disguise disguise;
     private static final Field intervalField;
 

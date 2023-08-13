@@ -11,9 +11,9 @@
 
 requires:
 
-* field in `PlayerHandler` to track what is the player's `soaked` value. 
-* `BlockAreaSoaked` entity to represent a region being soaked, this 
-entity will be spawned when an attack hits a block and there isn't already a BlockAreaDamaged entity 
+* field in `PlayerHandler` to track what is the player's `soaked` value.
+* `BlockAreaSoaked` entity to represent a region being soaked, this
+entity will be spawned when an attack hits a block and there isn't already a BlockAreaDamaged entity
 within 2 blocks of either direction of the hit.
 * `addToSoaked` method to `PlayerHandler` and `BlockAreaSoaked`.
 * `resetWetness` method to `PlayerHandler`.
@@ -39,7 +39,7 @@ requires:
 * efficient way to map the item the player is holding to what weapon that is.
   * on initialization -> run `initWeaponItems`
     * load all weapon item classes.
-    * add them to a list and save a reverse reference for the `weaponName` to the `weaponId` 
+    * add them to a list and save a reverse reference for the `weaponName` to the `weaponId`
     * (`weaponId` is equal to the index that the class is put in)
   * when player right clicks
     * get the item's `weaponId` tag and find the weapon object it is pointing to.
@@ -54,8 +54,8 @@ requires:
 * static method `generateBoxMullerNormLength` in `RandomUtil`
 * class `BubbleGun` implementing `WeaponItem`
 * method `onRightClick` for `BubbleGun` spawns `Bubble` entities.
-then generates a random initial quaternion based on the outputs of the 2 `BoxMullerNorm` 
-methods rotation and length. then applies the player's rotation transform as a quaternion 
+then generates a random initial quaternion based on the outputs of the 2 `BoxMullerNorm`
+methods rotation and length. then applies the player's rotation transform as a quaternion
 to that quaternion.
 
 * `Bubble` entities (extends snowballs)

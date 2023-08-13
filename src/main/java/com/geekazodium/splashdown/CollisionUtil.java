@@ -1,3 +1,7 @@
+/*
+ * Copyright © Geekazodium 2023.
+ * This file is released under GPLv3. See LICENSE for full license details.
+ */
 package com.geekazodium.splashdown;
 
 import static java.lang.Math.abs;

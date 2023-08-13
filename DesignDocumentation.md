@@ -1,12 +1,12 @@
 # DesignDocumentation // What tf do I even want to make??/brainstorming
 
 ## Soaked
-if the player's soaked meter reaches 100% they will not be able to interact at all until 
-they get to a drying station that belongs to their team. attacks can add some % to the soaked 
+if the player's soaked meter reaches 100% they will not be able to interact at all until
+they get to a drying station that belongs to their team. attacks can add some % to the soaked
 meter if they hit, but if it misses it will instead soak the wall/floor/celling where it hits, this
 is useless unless an ability allows the player to used soaked materials nearby.
-The goal is to have the most targets on the map, a target belongs to a team when it 
-has the most soaked % from that team, a target functions as a player, which can be soaked, 
+The goal is to have the most targets on the map, a target belongs to a team when it
+has the most soaked % from that team, a target functions as a player, which can be soaked,
 the only difference is there is no limit to what percent the target can get to.
 
 ## BattleLogger
@@ -46,11 +46,11 @@ attack, which will get a 30% increase in power.
 ### Mirror - gimmick/support
 main attack -> normal weapon of player's choice
 
-ability 1 (reflective plating) -> for a short amount of time, any attacks that hit the player will also hit the person who did the attack. 
+ability 1 (reflective plating) -> for a short amount of time, any attacks that hit the player will also hit the person who did the attack.
 the time will be decreased every time it successfully reflects a hit.
 
-ability 2 (mirror reflection) -> creates a mirrored clone of yourself for a somewhat brief period of time, this clone will copy 
-the user's actions, the mirror plane is the plane which projects to a single vertical line in the center of the user's screen 
+ability 2 (mirror reflection) -> creates a mirrored clone of yourself for a somewhat brief period of time, this clone will copy
+the user's actions, the mirror plane is the plane which projects to a single vertical line in the center of the user's screen
 based on the user's position snapshotted from the moment this ability is used.
 
 ability *2 (swap reflection) -> user switches position with the active clone, this can be used when the mirror clone is active.
@@ -58,14 +58,14 @@ ability *2 (swap reflection) -> user switches position with the active clone, th
 ### Towel - support
 main attack -> normal weapon of player's choice
 
-ability 1 (towel squeeze) -> absorbs water in nearby area, once this ability picks up any water to a max of 40%, the next use 
+ability 1 (towel squeeze) -> absorbs water in nearby area, once this ability picks up any water to a max of 40%, the next use
 will splash the water in a beam in the direction you are facing
 
-ability 2 (absorb) -> dries off a teammate that you are looking at which is in range by some amount, this 
+ability 2 (absorb) -> dries off a teammate that you are looking at which is in range by some amount, this
 amount will depend on how much water you can absorb and max out at 20% and will move that water onto you.
 
 ability 2* (towel spinner) -> when player is at more than 80% soaked, ability 2 gets replaced with this version
-when used, this will spray water in all directions which add up to a total of the player's soaked % while 
+when used, this will spray water in all directions which add up to a total of the player's soaked % while
 absorbing the soaked % from nearby allies. Once used, player using this will be set to 100% soaked.
 
 ### Bucket - support
