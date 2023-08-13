@@ -1,12 +1,9 @@
 package com.geekazodium.splashdown.entities;
 
-import com.destroystokyo.paper.ParticleBuilder;
-import com.geekazodium.splashdown.util.ParticleUtil;
-import io.papermc.paper.math.Rotations;
+import java.awt.*;
+import java.lang.reflect.Field;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.Disguise;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Snowball;
@@ -20,17 +17,12 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import java.awt.*;
-import java.lang.reflect.Field;
 
 public class BubbleEntity extends Snowball {
 
@@ -46,51 +38,52 @@ public class BubbleEntity extends Snowball {
     }
 
     public BubbleEntity(Location location, Vector deltaMovement, LivingEntity shooter) {
-        this(
-            ((CraftWorld) location.getWorld()).getHandle().getLevel(),
-            location.x(),
-            location.y(),
-            location.z()
-        );
+        this(((CraftWorld) location.getWorld()).getHandle().getLevel(), location.x(), location.y(), location.z());
         World world = location.getWorld();
-        if(disguise == null) {
+        if (disguise == null) {
             constructDisguise(location, world);
         }
         DisguiseAPI.disguiseEntity(this.getBukkitEntity(), disguise);
         this.invulnerableTime = 5;
         this.setOwner(((CraftEntity) shooter).getHandle());
-        this.setDeltaMovement(deltaMovement.getX(),deltaMovement.getY(),deltaMovement.getZ());
-//            updateInterval.setAccessible(true);
-//            Object o = updateInterval.get(this);
-//            updateInterval.setAccessible(false);
-//            SplashDown.LOGGER.info(o.toString());
+        this.setDeltaMovement(deltaMovement.getX(), deltaMovement.getY(), deltaMovement.getZ());
+        //            updateInterval.setAccessible(true);
+        //            Object o = updateInterval.get(this);
+        //            updateInterval.setAccessible(false);
+        //            SplashDown.LOGGER.info(o.toString());
     }
 
     private static void constructDisguise(Location location, World world) {
         Item displayEntity = (Item) world.spawnEntity(location.add(0, 512, 0), EntityType.DROPPED_ITEM);
         displayEntity.setItemStack(new ItemStack(Material.BLUE_STAINED_GLASS));
         displayEntity.setCanPlayerPickup(false);
-        //displayEntity.setInvisible(true);
+        // displayEntity.setInvisible(true);
         displayEntity.setInvulnerable(true);
         disguise = DisguiseAPI.constructDisguise(displayEntity, true, true);
         displayEntity.remove();
     }
-    
+
     private boolean modifiedUpdateInterval = false;
-    
+
     @Override
     public void tick() {
         super.tick();
         World level = this.getBukkitEntity().getWorld();
-        level.spawnParticle(Particle.DUST_COLOR_TRANSITION,this.getX(),this.getY(),this.getZ(),1,new Particle.DustTransition(Color.BLUE,Color.BLUE,0.8f));
-        if(tracker!=null&&!modifiedUpdateInterval)modifyUpdateInterval();
-        if(this.invulnerableTime>0)this.invulnerableTime--;
+        level.spawnParticle(
+                Particle.DUST_COLOR_TRANSITION,
+                this.getX(),
+                this.getY(),
+                this.getZ(),
+                1,
+                new Particle.DustTransition(Color.BLUE, Color.BLUE, 0.8f));
+        if (tracker != null && !modifiedUpdateInterval) modifyUpdateInterval();
+        if (this.invulnerableTime > 0) this.invulnerableTime--;
     }
 
     private void modifyUpdateInterval() {
         Field intervalField = getIntervalField();
         try {
-            intervalField.setInt(this.tracker.serverEntity,1);
+            intervalField.setInt(this.tracker.serverEntity, 1);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -104,10 +97,10 @@ public class BubbleEntity extends Snowball {
         int modifyOrdinal = 4;
         Field intervalField = null;
         for (Field declaredField : declaredFields) {
-            if(modifyOrdinal == seenFields) {
+            if (modifyOrdinal == seenFields) {
                 intervalField = declaredField;
                 intervalField.setAccessible(true);
-                //SplashDown.LOGGER.info(intervalField.getType().getName()+":"+ intervalField.getName());
+                // SplashDown.LOGGER.info(intervalField.getType().getName()+":"+ intervalField.getName());
                 break;
             }
             seenFields++;
@@ -115,8 +108,8 @@ public class BubbleEntity extends Snowball {
         assert intervalField != null;
         return intervalField;
     }
-    
-    public Field getIntervalField(){
+
+    public Field getIntervalField() {
         return intervalField;
     }
 
@@ -124,7 +117,7 @@ public class BubbleEntity extends Snowball {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
         CraftEntity bukkitEntity = entity.getBukkitEntity();
-        if(bukkitEntity instanceof LivingEntity livingEntity){
+        if (bukkitEntity instanceof LivingEntity livingEntity) {
             livingEntity.damage(10);
         }
     }
@@ -132,8 +125,8 @@ public class BubbleEntity extends Snowball {
     @Override
     public void preOnHit(HitResult preHitResult) {
         HitResult.Type type = preHitResult.getType();
-        if(type == HitResult.Type.ENTITY){
-            if(this.getOwner() == (((EntityHitResult) preHitResult).getEntity())) {
+        if (type == HitResult.Type.ENTITY) {
+            if (this.getOwner() == (((EntityHitResult) preHitResult).getEntity())) {
                 if (this.invulnerableTime > 0) return;
             }
         }

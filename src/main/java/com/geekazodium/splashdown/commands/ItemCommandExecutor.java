@@ -11,12 +11,13 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemCommandExecutor implements CommandExecutor {
-    //test code to make sure command is actually running
+    // test code to make sure command is actually running
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) return false;
         WeaponItemHandlerRegistry weaponItemHandlerRegistry = SplashDown.getInstance().weaponItemHandlerRegistry;
-        if(args.length!=1)return false;
+        if (args.length != 1) return false;
         String itemString = args[0];
         int handlerId = weaponItemHandlerRegistry.getHandlerId(itemString);
         WeaponItemHandler weaponItemHandler = weaponItemHandlerRegistry.getWeaponHandler(handlerId);

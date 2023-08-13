@@ -1,11 +1,10 @@
 package com.geekazodium.splashdown;
 
 import com.geekazodium.splashdown.commands.ItemCommandExecutor;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.logging.Logger;
 
 public class SplashDown extends JavaPlugin implements Listener {
     private static SplashDown instance;
@@ -19,7 +18,7 @@ public class SplashDown extends JavaPlugin implements Listener {
         setInstance(this);
         CollisionBox.debugRenderEnabled = true;
         playerHandlerInstantiator = new PlayerHandlerInstantiator();
-        Bukkit.getPluginManager().registerEvents(playerHandlerInstantiator,this);
+        Bukkit.getPluginManager().registerEvents(playerHandlerInstantiator, this);
         initWeaponItemHandlerRegistry();
 
         getServer().getPluginCommand("item").setExecutor(new ItemCommandExecutor());
@@ -35,7 +34,7 @@ public class SplashDown extends JavaPlugin implements Listener {
         SplashDown.instance = instance;
     }
 
-    public static SplashDown getInstance(){
+    public static SplashDown getInstance() {
         return instance;
     }
 }
