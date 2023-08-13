@@ -75,7 +75,26 @@ tasks {
             palantirJavaFormat("2.33.0")
             trimTrailingWhitespace()
             endWithNewline()
-        
+            //ratchetFrom("origin/main")
+//          Custom rule from https://github.com/apache/geode
+            custom("Refuse wildcard imports") {
+                val wildcardImportRegex = Regex("import [^\n]+\\*;");
+                if (wildcardImportRegex.containsMatchIn(it)) {
+                    val packageMatcher = Regex("package [^\n]+;")
+                    val classMatcher = Regex("\nclass [^\n(){}]+{")
+                    val errorMessage =
+                        "from package: " + (packageMatcher.find(it)?.groups?.get(0)?.value ?: "unknown") +
+                        "\nclass: " + (classMatcher.find(it)?.groups?.get(0) ?: "unknown");
+                        "\nat line: " + wildcardImportRegex.find(it)?.groups?.get(0)!!.value
+                        //I'M SO SORRY TO ANYONE WHO ACTUALLY CODES IN KOTLIN AND IS CRINGING AT THIS SPAGHETTI.
+                        //I'M SO SORRY PLEASE HAVE MERCY
+                        //I KNOW THIS IS WRONG I JUST NEEDED IT TO WORK PLEASE LEAVE ME ALONE I'M NOT HERE
+                        //TO STIR UP TROUBLE.
+                    throw AssertionError("Don't use * imports. \n$errorMessage")
+                }
+                it
+            }
+        }
     }
 }
 
