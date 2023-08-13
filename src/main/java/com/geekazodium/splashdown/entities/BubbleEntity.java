@@ -1,6 +1,5 @@
 package com.geekazodium.splashdown.entities;
 
-import java.awt.*;
 import java.lang.reflect.Field;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.Disguise;
@@ -47,17 +46,12 @@ public class BubbleEntity extends Snowball {
         this.invulnerableTime = 5;
         this.setOwner(((CraftEntity) shooter).getHandle());
         this.setDeltaMovement(deltaMovement.getX(), deltaMovement.getY(), deltaMovement.getZ());
-        //            updateInterval.setAccessible(true);
-        //            Object o = updateInterval.get(this);
-        //            updateInterval.setAccessible(false);
-        //            SplashDown.LOGGER.info(o.toString());
     }
 
     private static void constructDisguise(Location location, World world) {
         Item displayEntity = (Item) world.spawnEntity(location.add(0, 512, 0), EntityType.DROPPED_ITEM);
         displayEntity.setItemStack(new ItemStack(Material.BLUE_STAINED_GLASS));
         displayEntity.setCanPlayerPickup(false);
-        // displayEntity.setInvisible(true);
         displayEntity.setInvulnerable(true);
         disguise = DisguiseAPI.constructDisguise(displayEntity, true, true);
         displayEntity.remove();
@@ -100,7 +94,6 @@ public class BubbleEntity extends Snowball {
             if (modifyOrdinal == seenFields) {
                 intervalField = declaredField;
                 intervalField.setAccessible(true);
-                // SplashDown.LOGGER.info(intervalField.getType().getName()+":"+ intervalField.getName());
                 break;
             }
             seenFields++;
