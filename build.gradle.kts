@@ -1,3 +1,5 @@
+import com.diffplug.spotless.FormatterFunc
+
 plugins {
     `java-library`
     id("io.papermc.paperweight.userdev") version "1.5.5"
@@ -31,43 +33,44 @@ dependencies {
 
 tasks {
   // Configure reobfJar to run when invoking the build task
-  assemble {
-    dependsOn(reobfJar)
-  }
-
-  compileJava {
-    options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
-
-    // Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
-    // See https://openjdk.java.net/jeps/247 for more information.
-    options.release.set(17)
-  }
-  javadoc {
-    options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
-  }
-  processResources {
-    filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
-    val props = mapOf(
-      "name" to project.name,
-      "version" to project.version,
-      "description" to project.description,
-      "apiVersion" to "1.20"
-    )
-    inputs.properties(props)
-    filesMatching("plugin.yml") {
-      expand(props)
+    assemble {
+        dependsOn(reobfJar)
     }
-  }
 
-  /*
-  reobfJar {
+    compileJava {
+        options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+
+        // Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
+        // See https://openjdk.java.net/jeps/247 for more information.
+        options.release.set(17)
+    }
+    javadoc {
+        options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+    }
+    processResources {
+        filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
+        val props = mapOf(
+              "name" to project.name,
+              "version" to project.version,
+              "description" to project.description,
+              "apiVersion" to "1.20"
+        )
+        inputs.properties(props)
+        filesMatching("plugin.yml") {
+            expand(props)
+        }
+    }
+
+    /*
+    reobfJar {
     // This is an example of how you might change the output location for reobfJar. It's recommended not to do this
     // for a variety of reasons, however it's asked frequently enough that an example of how to do it is included here.
     outputJar.set(layout.buildDirectory.file("libs/PaperweightTestPlugin-${project.version}.jar"))
-  }
-   */
+    }
+    */
 
     spotless {
+        // spotless config from wynntils/artemis rewritten in kotlin
         java {
             // define the steps to apply to Java source code
             importOrder()
@@ -75,8 +78,7 @@ tasks {
             palantirJavaFormat("2.33.0")
             trimTrailingWhitespace()
             endWithNewline()
-            //ratchetFrom("origin/main")
-//          Custom rule from https://github.com/apache/geode
+            //          Custom rule from https://github.com/apache/geode
             custom("Refuse wildcard imports") {
                 val wildcardImportRegex = Regex("import [^\n]+\\*;");
                 if (wildcardImportRegex.containsMatchIn(it)) {
@@ -84,17 +86,58 @@ tasks {
                     val classMatcher = Regex("\nclass [^\n(){}]+{")
                     val errorMessage =
                         "from package: " + (packageMatcher.find(it)?.groups?.get(0)?.value ?: "unknown") +
-                        "\nclass: " + (classMatcher.find(it)?.groups?.get(0) ?: "unknown");
-                        "\nat line: " + wildcardImportRegex.find(it)?.groups?.get(0)!!.value
-                        //I'M SO SORRY TO ANYONE WHO ACTUALLY CODES IN KOTLIN AND IS CRINGING AT THIS SPAGHETTI.
-                        //I'M SO SORRY PLEASE HAVE MERCY
-                        //I KNOW THIS IS WRONG I JUST NEEDED IT TO WORK PLEASE LEAVE ME ALONE I'M NOT HERE
-                        //TO STIR UP TROUBLE.
+                            "\nclass: " + (classMatcher.find(it)?.groups?.get(0) ?: "unknown");
+                    "\nat line: " + wildcardImportRegex.find(it)?.groups?.get(0)!!.value
+                    //I'M SO SORRY TO ANYONE WHO ACTUALLY CODES IN KOTLIN AND IS CRINGING AT THIS SPAGHETTI.
+                    //I'M SO SORRY PLEASE HAVE MERCY
+                    //I KNOW THIS IS WRONG I JUST NEEDED IT TO WORK PLEASE LEAVE ME ALONE I'M NOT HERE
+                    //TO STIR UP TROUBLE.
                     throw AssertionError("Don't use * imports. \n$errorMessage")
                 }
                 it
             }
+            custom("No empty line after opening curly brace") {
+                it.replace(Regex("\\{\n\n"), "{\n")
+            }
+            licenseHeader(
+                "/*\n" +
+                    " * Copyright © Geekazodium \$YEAR.\n" +
+                    " * This file is released under GPLv3. See LICENSE for full license details.\n" +
+                    " */"
+            ).updateYearWithLatest(true)
         }
+
+        json {
+            target("src/**/*.json")
+            gson()
+                    .indentWithSpaces(2)
+                    .sortByKeys()
+                    .version("2.10.1")
+                trimTrailingWhitespace()
+                endWithNewline()
+            }
+            format("lang") {
+            target("src/main/resources/assets/wynntils/lang/*.json")
+            custom("No empty language json files") {
+                it.replace(Regex("^\\{\\}\n$"), "")
+            }
+        }
+        kotlinGradle{
+            target("**/*.gradle")
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        format("misc") {
+            // define the files to apply `misc` to
+            target("*.gradle", "*.md", ".gitignore", "*.properties")
+            targetExclude("CHANGELOG.md")
+
+            // define the steps to apply to those files
+            trimTrailingWhitespace()
+            indentWithSpaces()
+            endWithNewline()
+        }
+
     }
 }
 
