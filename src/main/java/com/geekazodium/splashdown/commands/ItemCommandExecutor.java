@@ -5,8 +5,8 @@
 package com.geekazodium.splashdown.commands;
 
 import com.geekazodium.splashdown.SplashDown;
-import com.geekazodium.splashdown.WeaponItemHandler;
-import com.geekazodium.splashdown.WeaponItemHandlerRegistry;
+import com.geekazodium.splashdown.items.CustomItemHandler;
+import com.geekazodium.splashdown.items.CustomItemHandlerRegistry;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,12 +20,12 @@ public class ItemCommandExecutor implements CommandExecutor {
     public boolean onCommand(
             @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) return false;
-        WeaponItemHandlerRegistry weaponItemHandlerRegistry = SplashDown.getInstance().weaponItemHandlerRegistry;
+        CustomItemHandlerRegistry customItemHandlerRegistry = SplashDown.getInstance().customItemHandlerRegistry;
         if (args.length != 1) return false;
         String itemString = args[0];
-        int handlerId = weaponItemHandlerRegistry.getHandlerId(itemString);
-        WeaponItemHandler weaponItemHandler = weaponItemHandlerRegistry.getWeaponHandler(handlerId);
-        ItemStack item = weaponItemHandler.getItem(handlerId);
+        int handlerId = customItemHandlerRegistry.getHandlerId(itemString);
+        CustomItemHandler customItemHandler = customItemHandlerRegistry.getWeaponHandler(handlerId);
+        ItemStack item = customItemHandler.getItem(handlerId);
         player.getInventory().addItem(item);
         return true;
     }

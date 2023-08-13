@@ -2,22 +2,27 @@
  * Copyright © Geekazodium 2023.
  * This file is released under GPLv3. See LICENSE for full license details.
  */
-package com.geekazodium.splashdown;
+package com.geekazodium.splashdown.items;
 
+import com.geekazodium.splashdown.CollisionUtil;
+import com.geekazodium.splashdown.PlayerHandler;
 import com.geekazodium.splashdown.entities.BubbleEntity;
 import com.geekazodium.splashdown.util.RandomUtil;
 import java.util.Random;
+
+import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.metadata.PlayerMetadataStore;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.joml.Quaterniond;
 
-public class BubbleGunHandler implements WeaponItemHandler {
+public class BubbleGunHandler extends WeaponItemHandler {
     @Override
     public String getIdString() {
         return "bubble_gun";
@@ -29,7 +34,7 @@ public class BubbleGunHandler implements WeaponItemHandler {
     }
 
     @Override
-    public void onRightClick(PlayerHandler playerHandler, PlayerInteractEvent event) {
+    public void onLeftClick(PlayerHandler playerHandler, ItemStack mainHandItem, int heldItemSlot, PlayerArmSwingEvent event) {
         Player player = playerHandler.getPlayer();
         Location eyeLocation = player.getEyeLocation();
         CraftWorld world = (CraftWorld) player.getWorld();
@@ -45,6 +50,7 @@ public class BubbleGunHandler implements WeaponItemHandler {
             spawnBubbleEntity(player, eyeLocation, finalDirectionVector, world);
         }
         event.setCancelled(true);
+        player.sendMessage("banana");
     }
 
     private static void spawnBubbleEntity(Player player, Location eyeLocation, Vector deltaMovement, CraftWorld world) {

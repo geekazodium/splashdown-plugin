@@ -6,6 +6,9 @@ package com.geekazodium.splashdown;
 
 import com.geekazodium.splashdown.commands.ItemCommandExecutor;
 import java.util.logging.Logger;
+
+import com.geekazodium.splashdown.items.BubbleGunHandler;
+import com.geekazodium.splashdown.items.CustomItemHandlerRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,7 +18,7 @@ public class SplashDown extends JavaPlugin implements Listener {
     public static final Logger LOGGER = Bukkit.getServer().getLogger();
     private PlayerHandlerInstantiator playerHandlerInstantiator;
 
-    public WeaponItemHandlerRegistry weaponItemHandlerRegistry;
+    public CustomItemHandlerRegistry customItemHandlerRegistry;
 
     @Override
     public void onEnable() {
@@ -29,9 +32,9 @@ public class SplashDown extends JavaPlugin implements Listener {
     }
 
     private void initWeaponItemHandlerRegistry() {
-        weaponItemHandlerRegistry = new WeaponItemHandlerRegistry();
-        weaponItemHandlerRegistry.registerItem(new BubbleGunHandler());
-        weaponItemHandlerRegistry.initIdStrings();
+        customItemHandlerRegistry = new CustomItemHandlerRegistry();
+        customItemHandlerRegistry.registerItem(new BubbleGunHandler());
+        customItemHandlerRegistry.initIdStrings();
     }
 
     private void setInstance(SplashDown instance) {

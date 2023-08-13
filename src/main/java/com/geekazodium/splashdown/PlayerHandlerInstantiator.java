@@ -8,12 +8,15 @@ import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
@@ -51,9 +54,12 @@ public class PlayerHandlerInstantiator implements Listener {
             playerHandler.onRightClick(event);
             return;
         }
-        if (event.getAction().isLeftClick()) {
-            playerHandler.onLeftClick(event);
-        }
+    }
+
+    @EventHandler
+    public void onPlayerLeftClick(PlayerArmSwingEvent event){
+        PlayerHandler playerHandler = playerHandlers.get(event.getPlayer().getUniqueId());
+        playerHandler.onLeftClick(event);
     }
 
     @EventHandler
@@ -63,6 +69,13 @@ public class PlayerHandlerInstantiator implements Listener {
         PlayerHandler playerHandler = playerHandlers.get(player.getUniqueId());
         playerHandler.onPlayerDeath(event);
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerAnimationEvent(PlayerAnimationEvent event){
+        Player player = event.getPlayer();
+        PlayerHandler playerHandler = playerHandlers.get(player.getUniqueId());
+        playerHandler.onAnimation(event);
     }
 
     @NotNull
