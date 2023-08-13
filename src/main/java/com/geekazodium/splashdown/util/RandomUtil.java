@@ -41,4 +41,12 @@ public class RandomUtil {
     public static Vector randomVec(double v,Random random) {
         return new Vector(nextDoubleRandomSign(v/2d,random),nextDoubleRandomSign(v/2d,random),nextDoubleRandomSign(v/2d,random));
     }
+
+    public static double getBoxMullerNormLength(Random random){
+        return Math.sqrt(-2*Math.log(random.nextDouble()));
+    }
+
+    public static double getBoxMullerNormRotation(Random random){
+        return random.nextDouble()*Math.PI*2;
+    }
 }

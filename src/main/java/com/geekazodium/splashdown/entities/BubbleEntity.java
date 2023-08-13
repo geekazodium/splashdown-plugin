@@ -1,16 +1,22 @@
 package com.geekazodium.splashdown.entities;
 
+import com.destroystokyo.paper.ParticleBuilder;
+import com.geekazodium.splashdown.util.ParticleUtil;
 import io.papermc.paper.math.Rotations;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.Disguise;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
@@ -23,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.lang.reflect.Field;
 
 public class BubbleEntity extends Snowball {
@@ -38,7 +45,7 @@ public class BubbleEntity extends Snowball {
         super(world, x, y, z);
     }
 
-    public BubbleEntity(Location location, LivingEntity shooter, double speed) {
+    public BubbleEntity(Location location, Vector deltaMovement, LivingEntity shooter) {
         this(
             ((CraftWorld) location.getWorld()).getHandle().getLevel(),
             location.x(),
@@ -52,8 +59,7 @@ public class BubbleEntity extends Snowball {
         DisguiseAPI.disguiseEntity(this.getBukkitEntity(), disguise);
         this.invulnerableTime = 5;
         this.setOwner(((CraftEntity) shooter).getHandle());
-        Vector direction = location.getDirection();
-        this.setDeltaMovement(direction.getX()*speed, direction.getY()*speed, direction.getZ()*speed);
+        this.setDeltaMovement(deltaMovement.getX(),deltaMovement.getY(),deltaMovement.getZ());
 //            updateInterval.setAccessible(true);
 //            Object o = updateInterval.get(this);
 //            updateInterval.setAccessible(false);
@@ -75,6 +81,8 @@ public class BubbleEntity extends Snowball {
     @Override
     public void tick() {
         super.tick();
+        World level = this.getBukkitEntity().getWorld();
+        level.spawnParticle(Particle.DUST_COLOR_TRANSITION,this.getX(),this.getY(),this.getZ(),1,new Particle.DustTransition(Color.BLUE,Color.BLUE,0.8f));
         if(tracker!=null&&!modifiedUpdateInterval)modifyUpdateInterval();
         if(this.invulnerableTime>0)this.invulnerableTime--;
     }
