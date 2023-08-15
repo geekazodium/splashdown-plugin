@@ -41,17 +41,18 @@ public class BubbleEntity extends Snowball {
 
     public BubbleEntity(Location location, Vector deltaMovement, LivingEntity shooter) {
         this(((CraftWorld) location.getWorld()).getHandle().getLevel(), location.x(), location.y(), location.z());
-        World world = location.getWorld();
-        if (disguise == null) {
-            constructDisguise(location, world);
-        }
+        //        World world = location.getWorld();
+        //        if (disguise == null) {
+        //            constructDisguise(location, world);
+        //        }
         DisguiseAPI.disguiseEntity(this.getBukkitEntity(), disguise);
         this.invulnerableTime = 5;
         this.setOwner(((CraftEntity) shooter).getHandle());
         this.setDeltaMovement(deltaMovement.getX(), deltaMovement.getY(), deltaMovement.getZ());
     }
 
-    private static void constructDisguise(Location location, World world) {
+    public static void constructDisguise(Location location) {
+        World world = location.getWorld();
         Item displayEntity = (Item) world.spawnEntity(location.add(0, 512, 0), EntityType.DROPPED_ITEM);
         displayEntity.setItemStack(new ItemStack(Material.BLUE_STAINED_GLASS));
         displayEntity.setCanPlayerPickup(false);

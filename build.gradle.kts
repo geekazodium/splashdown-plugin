@@ -1,5 +1,3 @@
-import com.diffplug.spotless.FormatterFunc
-
 plugins {
     `java-library`
     id("io.papermc.paperweight.userdev") version "1.5.5"
@@ -80,38 +78,17 @@ tasks {
             endWithNewline()
             //          Custom rule from https://github.com/apache/geode
             custom("Refuse wildcard imports") {
-                val wildcardImportRegex = Regex("import [^\n]+\\*;");
-                if (wildcardImportRegex.containsMatchIn(it)) {
-                    val packageMatcher = Regex("package [^\n]+;")
-                    val classMatcher = Regex("\npublic {1,3}class ([^\n(){}]+)")
-                    val errorMessage =
-                            "from package: " + (packageMatcher.find(it)?.groups?.get(0)?.value ?: "unknown") +
-                            "\nclass: " + (classMatcher.find(it)?.groups?.get(1)?.value ?: "unknown") +
-                            "\nat line: " + wildcardImportRegex.find(it)?.groups?.get(0)!!.value
-                    //I'M SO SORRY TO ANYONE WHO ACTUALLY CODES IN KOTLIN AND IS CRINGING AT THIS SPAGHETTI.
-                    //I'M SO SORRY PLEASE HAVE MERCY
-                    //I KNOW THIS IS WRONG I JUST NEEDED IT TO WORK PLEASE LEAVE ME ALONE I'M NOT HERE
-                    //TO STIR UP TROUBLE.
-                    throw AssertionError("Don't use * imports. \n$errorMessage")
-                }
+                findIllegalPattern(it,"import [^\n]+\\*;","Don't use * imports.")
                 it
             }
             //custom rule
             custom("Refuse static imports") {
-                val wildcardImportRegex = Regex("import static [^\n]+;");
-                if (wildcardImportRegex.containsMatchIn(it)) {
-                    val packageMatcher = Regex("package [^\n]+;")
-                    val classMatcher = Regex("\npublic {1,3}class ([^\n(){}]+)")
-                    val errorMessage =
-                            "from package: " + (packageMatcher.find(it)?.groups?.get(0)?.value ?: "unknown") +
-                            "\nclass: " + (classMatcher.find(it)?.groups?.get(1)?.value ?: "unknown") +
-                            "\nat line: " + wildcardImportRegex.find(it)?.groups?.get(0)!!.value
-                    //I'M SO SORRY TO ANYONE WHO ACTUALLY CODES IN KOTLIN AND IS CRINGING AT THIS SPAGHETTI.
-                    //I'M SO SORRY PLEASE HAVE MERCY
-                    //I KNOW THIS IS WRONG I JUST NEEDED IT TO WORK PLEASE LEAVE ME ALONE I'M NOT HERE
-                    //TO STIR UP TROUBLE.
-                    throw AssertionError("Don't use * imports. \n$errorMessage")
-                }
+                findIllegalPattern(it,"import static [^\n]+;","Don't use static imports.")
+                it
+            }
+
+            custom("Refuse system out calls") {
+                findIllegalPattern(it,"System[ \n]?.[ \n]?out","use Debug.Log instead.")
                 it
             }
 
@@ -157,6 +134,23 @@ tasks {
             endWithNewline()
         }
 
+    }
+}
+
+fun findIllegalPattern(it:String, pattern: String, errorPrefix: String){
+    val regex = Regex(pattern);
+    if (regex.containsMatchIn(it)) {
+        val packageMatcher = Regex("package [^\n]+;")
+        val classMatcher = Regex("\npublic {1,3}class ([^\n(){}]+)")
+        val errorMessage =
+            "from package: " + (packageMatcher.find(it)?.groups?.get(0)?.value ?: "unknown") +
+                "\nclass: " + (classMatcher.find(it)?.groups?.get(1)?.value ?: "unknown") +
+                "\nat line: " + regex.find(it)?.groups?.get(0)!!.value
+        //I'M SO SORRY TO ANYONE WHO ACTUALLY CODES IN KOTLIN AND IS CRINGING AT THIS SPAGHETTI.
+        //I'M SO SORRY PLEASE HAVE MERCY
+        //I KNOW THIS IS WRONG I JUST NEEDED IT TO WORK PLEASE LEAVE ME ALONE I'M NOT HERE
+        //TO STIR UP TROUBLE.
+        throw AssertionError("$errorPrefix \n$errorMessage")
     }
 }
 

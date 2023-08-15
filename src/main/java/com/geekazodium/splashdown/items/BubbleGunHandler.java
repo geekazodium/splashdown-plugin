@@ -50,7 +50,7 @@ public class BubbleGunHandler extends WeaponItemHandler {
         event.setCancelled(true);
     }
 
-    private static void spawnBubbleEntity(Player player, Location eyeLocation, Vector deltaMovement, CraftWorld world) {
+    private void spawnBubbleEntity(Player player, Location eyeLocation, Vector deltaMovement, CraftWorld world) {
         world.addEntityToWorld(
                 new BubbleEntity(eyeLocation, deltaMovement.clone().multiply(2), player),
                 CreatureSpawnEvent.SpawnReason.COMMAND);

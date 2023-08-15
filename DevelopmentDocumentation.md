@@ -72,7 +72,7 @@ players can pick a class before game starts, classes have special abilities.
 ### Bubbler - damage
 main attack -> normal weapon of player's choice
 
-ability 1 (bubble stream) -> dashes forward/backward (depending on if shifting) and launches a stream of bubbles in that direction
+ability 1 (bubble dash) -> dashes forward/backward (depending on if shifting) and launches a stream of bubbles in that direction
 
 ability 2 (orbital bubbles) -> creates bubbles that float around the player, when the player uses the next attack/ability,
 one of these bubbles will burst and will add 5% to the power of that attack. if these bubbles are hit by

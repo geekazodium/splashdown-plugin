@@ -4,22 +4,23 @@
  */
 package com.geekazodium.splashdown.items.ability;
 
-import com.geekazodium.splashdown.items.AbilityItemHandler;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class BubbleAbilityHandler extends AbilityItemHandler {
+public class BubbleDashAbilityHandler extends AbilityItemHandler {
     @Override
     public String getIdString() {
-        return null;
+        return "ability_bubble_dash";
     }
 
     @Override
     public String getCanonicalName() {
-        return null;
+        return "Bubble Dash";
     }
 
     @Override
     public ItemStack getItem() {
-        return null;
+        ItemStack item = new ItemStack(Material.BREWER_POTTERY_SHERD, 1);
+        return item;
     }
 }
