@@ -8,14 +8,11 @@ import com.geekazodium.splashdown.CollisionUtil;
 import com.geekazodium.splashdown.PlayerHandler;
 import com.geekazodium.splashdown.entities.BubbleEntity;
 import com.geekazodium.splashdown.util.RandomUtil;
-import java.util.Random;
-
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
+import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R1.metadata.PlayerMetadataStore;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +31,8 @@ public class BubbleGunHandler extends WeaponItemHandler {
     }
 
     @Override
-    public void onLeftClick(PlayerHandler playerHandler, ItemStack mainHandItem, int heldItemSlot, PlayerArmSwingEvent event) {
+    public void onLeftClick(PlayerHandler playerHandler, PlayerArmSwingEvent event, ItemStack itemStack) {
+        if (!ifSetCooldown(playerHandler, itemStack, 20)) return;
         Player player = playerHandler.getPlayer();
         Location eyeLocation = player.getEyeLocation();
         CraftWorld world = (CraftWorld) player.getWorld();
@@ -50,7 +48,6 @@ public class BubbleGunHandler extends WeaponItemHandler {
             spawnBubbleEntity(player, eyeLocation, finalDirectionVector, world);
         }
         event.setCancelled(true);
-        player.sendMessage("banana");
     }
 
     private static void spawnBubbleEntity(Player player, Location eyeLocation, Vector deltaMovement, CraftWorld world) {

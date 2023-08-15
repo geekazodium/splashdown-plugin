@@ -29,5 +29,5 @@ public interface CustomItemHandler {
 
     ItemStack getItem();
 
-    void onLeftClick(PlayerHandler playerHandler, ItemStack mainHandItem, int heldItemSlot, PlayerArmSwingEvent event);
+    void onLeftClick(PlayerHandler playerHandler, PlayerArmSwingEvent event, ItemStack itemStack);
 }

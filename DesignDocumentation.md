@@ -72,6 +72,14 @@ absorbing the soaked % from nearby allies. Once used, player using this will be 
 
 //something ig idk
 
+## Abilities
+
+### Bindings
+inputs can be bound to abilities in 3 ways.
+1: clicking (r & l both work) when holding an ability item.
+2: switching hotbar slot to an ability item.
+3: drop item & swap hands.
+
 ## Game
 
 ### Waiting for players

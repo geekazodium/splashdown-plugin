@@ -4,12 +4,11 @@
  */
 package com.geekazodium.splashdown.items;
 
+import com.geekazodium.splashdown.SplashDown;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.geekazodium.splashdown.SplashDown;
 import org.bukkit.NamespacedKey;
 
 public class CustomItemHandlerRegistry {

@@ -7,17 +7,14 @@ package com.geekazodium.splashdown;
 import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.destroystokyo.paper.event.server.ServerTickStartEvent;
-import java.util.Collection;
-import java.util.function.Predicate;
-
 import com.geekazodium.splashdown.items.CustomItemHandler;
 import com.geekazodium.splashdown.items.CustomItemHandlerRegistry;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
-import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
+import java.util.Collection;
+import java.util.function.Predicate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -25,8 +22,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -63,26 +58,23 @@ public class PlayerHandler implements Listener {
         ItemStack mainHandItem = player.getInventory().getItemInMainHand();
         runIfItemIdExists(mainHandItem, itemId -> {
             CustomItemHandler itemHandler =
-            SplashDown.getInstance().customItemHandlerRegistry.getWeaponHandler(itemId);
+                    SplashDown.getInstance().customItemHandlerRegistry.getWeaponHandler(itemId);
             itemHandler.onRightClick(this, event);
         });
     }
 
     public void onLeftClick(PlayerArmSwingEvent event) {
+        disableArmSwingAnimation();
         ItemStack mainHandItem = player.getInventory().getItemInMainHand();
         runIfItemIdExists(mainHandItem, itemId -> {
-            if(event.getHand() != EquipmentSlot.HAND)return;
+            if (event.getHand() != EquipmentSlot.HAND) return;
             CustomItemHandler itemHandler =
-                SplashDown.getInstance().customItemHandlerRegistry.getWeaponHandler(itemId);
-            itemHandler.onLeftClick(this, mainHandItem, player.getInventory().getHeldItemSlot(), event);
+                    SplashDown.getInstance().customItemHandlerRegistry.getWeaponHandler(itemId);
+            itemHandler.onLeftClick(this, event, mainHandItem);
         });
     }
 
-    public void onAnimation(PlayerAnimationEvent event){
-        event.setCancelled(true);
-    }
-
-    private void runIfItemIdExists(ItemStack itemStack,IfItemIdExists runIfHasId){
+    private void runIfItemIdExists(ItemStack itemStack, IfItemIdExists runIfHasId) {
         int itemId = getItemId(itemStack);
         if (itemId != -1) {
             runIfHasId.ifHasItemId(itemId);
@@ -90,7 +82,7 @@ public class PlayerHandler implements Listener {
     }
 
     @FunctionalInterface
-    private interface IfItemIdExists{
+    private interface IfItemIdExists {
         void ifHasItemId(int itemId);
     }
 
@@ -135,9 +127,9 @@ public class PlayerHandler implements Listener {
         disableArmSwingAnimation();
     }
 
-    private void disableArmSwingAnimation(){
+    private void disableArmSwingAnimation() {
         player.clearActivePotionEffects();
-        player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING,Integer.MAX_VALUE,5,true));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 5, true, false));
     }
 
     public Player getPlayer() {

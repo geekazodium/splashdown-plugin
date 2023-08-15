@@ -5,10 +5,9 @@
 package com.geekazodium.splashdown;
 
 import com.geekazodium.splashdown.commands.ItemCommandExecutor;
-import java.util.logging.Logger;
-
 import com.geekazodium.splashdown.items.BubbleGunHandler;
 import com.geekazodium.splashdown.items.CustomItemHandlerRegistry;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
